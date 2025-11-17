@@ -9,6 +9,13 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = '__all__'
 
+    def validate(self, data):
+        print("Debug validate data:", data)  # DEBUG PRINT
+        if data['age'] < 18:
+            raise serializers.ValidationError("Age must be at least 18.")
+        return data
+
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
@@ -57,3 +64,4 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ['name', 'books']
+

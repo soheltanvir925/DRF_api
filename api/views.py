@@ -19,8 +19,17 @@ class StudentViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     ordering_fields = ['name', 'age']
 
-def post(self, request):
-    print("Request Data: ", request.data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        print("DEBUG: Incoming Data ->", request.data)  # DEBUG
+        if serializer.is_valid():
+            print("DEBUG: Validated Data ->", serializer.validated_data)  # DEBUG
+            obj=serializer.save()
+            print("DEBUG: Created Object ->", obj)  # DEBUG
+            return Response(serializer.data, status=201)
+        else:
+            print("DEBUG: Serializer Errors ->", serializer.errors)  # DEBUG
+            return Response(serializer.errors, status=400)
     
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
